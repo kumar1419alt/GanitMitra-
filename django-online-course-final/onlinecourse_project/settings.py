@@ -5,6 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "replace-this-development-key-before-production"
 DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "*"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://ankushkuma12-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
