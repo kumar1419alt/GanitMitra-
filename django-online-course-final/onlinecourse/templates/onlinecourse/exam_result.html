@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exam results — {{ submission.lesson.title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-dark bg-primary mb-4"><div class="container"><a class="navbar-brand" href="{% url 'onlinecourse:course_list' %}">OnlineCourse</a></div></nav>
+<main class="container pb-5">
+  <section class="card border-0 shadow-sm mb-4"><div class="card-body p-4 p-md-5 text-center">
+    {% if submission.max_score and submission.score == submission.max_score %}
+      <div class="display-6 mb-2">🎉</div><h1 class="h2 text-success">Congratulations!</h1><p class="lead">You answered every question correctly.</p>
+    {% else %}
+      <h1 class="h2">Exam complete</h1><p class="lead">Review your answers below and keep learning.</p>
+    {% endif %}
+    <p class="text-secondary mb-1">{{ submission.lesson.course.name }} — {{ submission.lesson.title }}</p>
+    <div class="display-4 fw-bold">{{ submission.score }} / {{ submission.max_score }}</div>
+    <p class="fs-5">Score: {{ submission.percentage }}%</p>
+    <div class="progress mx-auto" style="max-width:420px;height:12px"><div class="progress-bar {% if submission.percentage >= 70 %}bg-success{% else %}bg-warning{% endif %}" role="progressbar" style="width:{{ submission.percentage }}%" aria-valuenow="{{ submission.percentage }}" aria-valuemin="0" aria-valuemax="100"></div></div>
+  </div></section>
+  <h2 class="h3 mb-3">Exam results</h2>
+  {% for item in results %}
+    <section class="card shadow-sm mb-3"><div class="card-body">
+      <div class="d-flex justify-content-between gap-3"><h3 class="h5">Question {{ forloop.counter }}: {{ item.question.question_text }}</h3>
+      {% if item.is_correct %}<span class="badge text-bg-success align-self-start">Correct (+{{ item.question.grade }})</span>{% else %}<span class="badge text-bg-danger align-self-start">Incorrect (0)</span>{% endif %}</div>
+      <ul class="list-group list-group-flush mt-2">{% for choice in item.choices %}<li class="list-group-item px-0 {% if choice.id in item.correct_ids %}list-group-item-success{% elif choice.id in item.selected_ids %}list-group-item-danger{% endif %}">{% if choice.id in item.selected_ids %}<strong>Your answer:</strong> {% endif %}{{ choice.choice_text }} {% if choice.id in item.correct_ids %}<span class="badge text-bg-success ms-2">Correct answer</span>{% endif %}</li>{% endfor %}</ul>
+    </div></section>
+  {% empty %}<div class="alert alert-info">This lesson did not have any questions.</div>{% endfor %}
+  <a class="btn btn-primary mt-2" href="{% url 'onlinecourse:course_details' submission.lesson.course_id %}">Return to course</a>
+</main>
+</body>
+</html>
